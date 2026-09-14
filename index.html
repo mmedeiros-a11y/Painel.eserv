@@ -335,7 +335,19 @@
 </style>
 </head>
 <body>
-
+<script>
+(function(){
+  var senha = "epainel7";
+  if (sessionStorage.getItem('painelAuth') !== 'ok') {
+    var digitada = prompt('Digite a senha de acesso ao Painel de Prazos:');
+    if (digitada !== senha) {
+      document.body.innerHTML = '<h2 style="text-align:center;margin-top:60px;font-family:sans-serif;">Acesso negado.</h2>';
+      throw new Error('Acesso negado');
+    }
+    sessionStorage.setItem('painelAuth', 'ok');
+  }
+})();
+</script>
 <header>
   <div class="header-row">
     <div class="brand">
