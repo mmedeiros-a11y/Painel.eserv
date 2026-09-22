@@ -1095,7 +1095,8 @@ function openModal(id){
   editingId = id || null;
   const form = document.getElementById('modalForm');
   form.reset();
-  document.getElementById('btnDelete').style.display = (editingId && !READ_ONLY) ? 'inline-block' : 'none';
+  const canDelete = editingId && !READ_ONLY && !!(currentUserRecord && currentUserRecord.isAdmin);
+  document.getElementById('btnDelete').style.display = canDelete ? 'inline-block' : 'none';
   document.getElementById('modalTitle').textContent = editingId ? 'Detalhes do posto' : 'Novo posto';
   document.getElementById('v_data').value = todayISO();
   document.getElementById('v_obs').value = '';
@@ -1172,6 +1173,10 @@ async function handleSubmit(e){
 }
 async function handleDelete(){
   if(!editingId) return;
+  if(!(currentUserRecord && currentUserRecord.isAdmin)){
+    showToast('Só administradores podem excluir um posto.');
+    return;
+  }
   if(!confirm('Excluir este posto? Essa ação não pode ser desfeita.')) return;
   state.postos = state.postos.filter(x=>x.id!==editingId);
   await persist(); showToast('Posto excluído.'); closeModal(); renderAll();
