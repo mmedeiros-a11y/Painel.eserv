@@ -2238,7 +2238,11 @@ function renderTable(){
     const c = palette(p.supervisor||'');
     const lv = lastVisit(p);
     return `<tr class="${filho?'grp-filho':''}" ${filho?`data-grupo="${escapeAttr(filho)}"`:''} style="${p.encerrado?'opacity:.6;':''}${filho && !state.gruposAbertos.has(filho)?'display:none;':''}">
-      <td><div class="posto-name">${escapeHtml(p.posto)}${p.encerrado?' <span class="chip" style="background:var(--surface-alt);color:var(--ink-muted);">Encerrado</span>':''}</div>${(p.cliente_nome||p.curva_abc)?`<div style="font-size:11.5px;color:var(--ink-muted);">${escapeHtml(p.cliente_nome||'')}${p.curva_abc?`${p.cliente_nome?' · ':''}<b>Curva ${escapeHtml(p.curva_abc)}</b>`:''}</div>`:''}</td>
+      <td><div class="posto-name">${escapeHtml(p.posto)}${p.encerrado?' <span class="chip" style="background:var(--surface-alt);color:var(--ink-muted);">Encerrado</span>':''}</div>${(()=>{ const q=parseQtd(p.funcionarios), partes=[];
+        if(p.cliente_nome && !filho) partes.push(escapeHtml(p.cliente_nome));
+        if(q) partes.push(`${q} colaborador${q>1?'es':''}`);
+        if(p.curva_abc) partes.push(`<b>Curva ${escapeHtml(p.curva_abc)}</b>`);
+        return partes.length ? `<div style="font-size:11.5px;color:var(--ink-muted);">${partes.join(' · ')}</div>` : ''; })()}</td>
       <td><span class="chip" style="background:${c.dot}22;color:${c.dot};"><span class="swatch" style="background:${c.dot}"></span>${escapeHtml(p.supervisor||'—')}</span></td>
       <td><span class="crit-dot ${critClass(critDe(p))}" title="${escapeAttr(avaliacao(p).fonte==='manual'?'Avaliação manual antiga':avaliacao(p).fonte==='ficha'?'Pelo relatório de '+formatDateBR(avaliacao(p).visita.data):'')}"><span class="swatch" style="background:currentColor"></span>${critLabel(critDe(p))}</span></td>
       <td class="last-visit">${lv ? formatDateBR(lv) : '—'}</td>
